@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:poke/bloc/pokemon/pokemon_bloc.dart';
 import 'package:poke/bloc/pokemon_list/pokemon_list_bloc.dart';
-import 'package:poke/ui/home/pokemon_tile.dart';
+import 'package:poke/ui/screens/character.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -20,58 +19,95 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  List friends = [
+    ['Ross Geller', 'ross.jpeg'],
+    ['Rachel Green', 'rachel.jpeg'],
+    ['Monica Geller', 'monica.jpeg'],
+    ['Chandler Bing', 'chandler.webp'],
+    ['Joey Tribbiani', 'joey1.jpeg'],
+    ['Phoebe Buffay', 'pheobe.jpeg'],
+    ['Ross Geller', 'ross2.jpeg'],
+    ['Rachel Green', 'rachel2.jpeg'],
+    ['Monica Geller', 'monica2.jpeg'],
+    ['Chandler Bing', 'chandler2.jpeg'],
+    ['Joey Tribbiani', 'joey2.webp'],
+    ['Phoebe Buffay', 'pheobe2.webp'],
+  ];
+
+  bool happy = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Poke'),
-      ),
-      body: BlocConsumer<PokemonListBloc, PokemonListState>(
-        listener: (context, state) {
-          state.when(
-            initial: () {},
-            loading: () {
-              bloc.add(const PokemonListEvent.fetchPokemonData());
-            },
-            loaded: (pokemonSearchResult) {},
-            error: (statusCode) {},
-          );
-        },
-        builder: (context, state) {
-          return state.maybeWhen(
-            orElse: () => const Center(child: CircularProgressIndicator()),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (statusCode) => Center(
-              child: Text(statusCode),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 20,
             ),
-            initial: () => const Center(child: CircularProgressIndicator()),
-            loaded: (pokemonSearchResult) {
-              return SizedBox(
-                height: MediaQuery.of(context).size.height,
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      for (var pokemonResult in pokemonSearchResult.results!)
-                        BlocProvider(
-                          create: (context) => PokemonBloc(),
-                          child: Center(
-                            child: SizedBox(
-                              height: 200,
-                              width: 300,
-                              child: PokemonTile(
-                                pokemonResult: pokemonResult,
-                              ),
-                            ),
-                          ),
-                        )
-                    ],
-                  ),
+            Expanded(
+              child: GridView.builder(
+                shrinkWrap: true,
+                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: 350,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
                 ),
-              );
-            },
-          );
-        },
+                itemCount: friends.length,
+                itemBuilder: (context, index) {
+                  int dummy = index;
+                  index %= 6;
+                  if (happy) index = index + 6;
+                  print('index : $index');
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Character(
+                            imgUrl: friends[index][1],
+                            index: dummy,
+                            name: friends[index][0]
+                                .toString()
+                                .toLowerCase()
+                                .split(' ')[0],
+                          ),
+                        ),
+                      );
+                    },
+                    child: Card(
+                      elevation: 2,
+                      child: SizedBox(
+                        child: Hero(
+                          tag: 'character$dummy',
+                          child: Image.asset(
+                            'assets/${friends[index][1]}',
+                            fit: BoxFit.fill,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  happy = !happy;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SizedBox(
+                  height: 200,
+                  child: Image.asset('assets/friends.png'),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

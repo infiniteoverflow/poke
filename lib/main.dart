@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:poke/bloc/pokemon_list/pokemon_list_bloc.dart';
 import 'package:poke/ui/home/home_page.dart';
