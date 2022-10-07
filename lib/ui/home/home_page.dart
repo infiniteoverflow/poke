@@ -21,14 +21,14 @@ class _HomePageState extends State<HomePage> {
 
   List friends = [
     ['Ross Geller', 'ross.jpeg'],
-    ['Rachel Green', 'rachel.jpeg'],
     ['Monica Geller', 'monica.jpeg'],
+    ['Rachel Green', 'rachel.jpeg'],
     ['Chandler Bing', 'chandler.webp'],
-    ['Joey Tribbiani', 'joey1.jpeg'],
+    ['Joey Tribbiani', 'joey1.webp'],
     ['Phoebe Buffay', 'pheobe.jpeg'],
     ['Ross Geller', 'ross2.jpeg'],
-    ['Rachel Green', 'rachel2.jpeg'],
     ['Monica Geller', 'monica2.jpeg'],
+    ['Rachel Green', 'rachel2.jpeg'],
     ['Chandler Bing', 'chandler2.jpeg'],
     ['Joey Tribbiani', 'joey2.webp'],
     ['Phoebe Buffay', 'pheobe2.webp'],
@@ -59,7 +59,6 @@ class _HomePageState extends State<HomePage> {
                   int dummy = index;
                   index %= 6;
                   if (happy) index = index + 6;
-                  print('index : $index');
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -102,7 +101,9 @@ class _HomePageState extends State<HomePage> {
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   height: 200,
-                  child: Image.asset('assets/friends.png'),
+                  child: Image.asset(
+                    'assets/friends.png',
+                  ),
                 ),
               ),
             ),
