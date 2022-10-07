@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:poke/bloc/pokemon_list/pokemon_list_bloc.dart';
+import 'package:poke/network/api_service.dart';
 import 'package:poke/ui/screens/character.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,11 +11,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late PokemonListBloc bloc;
-
   @override
   void initState() {
-    bloc = BlocProvider.of<PokemonListBloc>(context);
+    ApiService.fetchRecipe(id:1);
     super.initState();
   }
 
@@ -25,7 +23,7 @@ class _HomePageState extends State<HomePage> {
     ['Rachel Green', 'rachel.jpeg'],
     ['Chandler Bing', 'chandler.webp'],
     ['Joey Tribbiani', 'joey1.webp'],
-    ['Phoebe Buffay', 'pheobe.jpeg'],
+    ['Phoebe Buffay', 'pheobe.webp'],
     ['Ross Geller', 'ross2.jpeg'],
     ['Monica Geller', 'monica2.jpeg'],
     ['Rachel Green', 'rachel2.jpeg'],

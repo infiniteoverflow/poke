@@ -1,32 +1,25 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:poke/models/pokemon.dart';
-import 'package:poke/models/pokemon_list.dart';
+import 'package:poke/key.dart';
+import 'package:poke/models/recipe.dart';
 
 class ApiService {
-  static Future<List> fetchPokemonList({int limit = 20}) async {
-    final url = Uri.parse('https://pokeapi.co/api/v2/pokemon?limit=$limit');
-    http.Response response = await http.get(url);
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      final pokemonList = PokemonSearchResult.fromJson(json);
-      return [pokemonList, 200];
-    } else {
-      return [null, response.statusCode];
-    }
-  }
+  static Future fetchRecipe({int id = 0}) async {
+    final queryParams = {
+      'app_id': Key.appId,
+      'app_key': Key.applicationKey,
+      'type': 'public',
+    };
+    var response = await http.get(
+      Uri.https('api.edamam.com',
+          'api/recipes/v2/1b9794df9596fb8a060fb52029db63b0', queryParams),
+    );
 
-  static Future<List> fetchPokemon({required String url}) {
-    final uri = Uri.parse(url);
-    return http.get(uri).then((response) {
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        final pokemon = Pokemon.fromJson(json);
-        return [pokemon, 200];
-      } else {
-        return [null, response.statusCode];
-      }
-    });
+    RecipeData recipeData = RecipeData.fromJson(
+      jsonDecode(response.body),
+    );
+
+    print('Recipe fetched : ${recipeData.recipe?.uri}');
   }
 }

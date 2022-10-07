@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 class Character extends StatefulWidget {
@@ -15,8 +17,25 @@ class Character extends StatefulWidget {
   State<Character> createState() => _CharacterState();
 }
 
-class _CharacterState extends State<Character> {
+class _CharacterState extends State<Character>
+    with SingleTickerProviderStateMixin {
   ValueNotifier happy = ValueNotifier(false);
+  ValueNotifier rotate = ValueNotifier(false);
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller =
+        AnimationController(vsync: this, duration: const Duration(seconds: 2))
+          ..repeat();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,10 +52,27 @@ class _CharacterState extends State<Character> {
               tag: 'character${widget.index}',
               child: ValueListenableBuilder(
                 valueListenable: happy,
-                builder: (context, value, _) => Image.asset(
-                  happy.value ? 'assets/joey2.webp' : 'assets/${widget.imgUrl}',
-                  fit: BoxFit.cover,
-                ),
+                builder: (context, value, _) => ValueListenableBuilder(
+                    valueListenable: rotate,
+                    builder: (context, value, _) {
+                      return AnimatedBuilder(
+                          animation: _controller,
+                          builder: (context, child) {
+                            if (rotate.value) {
+                              return RotateWidget(
+                                controller: _controller,
+                                happy: happy,
+                                widget: widget,
+                              );
+                            }
+                            return Image.asset(
+                              happy.value
+                                  ? 'assets/joey2.webp'
+                                  : 'assets/${widget.imgUrl}',
+                              fit: BoxFit.cover,
+                            );
+                          });
+                    }),
               ),
             ),
           ),
@@ -51,11 +87,15 @@ class _CharacterState extends State<Character> {
       case 'joey':
         return getJoey();
       case 'phoebe':
+        return getPhoebe();
       case 'rachel':
         return getRachel();
       case 'ross':
+        return getRoss();
       case 'chandler':
+        return getChandler();
       case 'monica':
+        return getMonica();
       default:
         return getJoey();
     }
@@ -101,13 +141,101 @@ class _CharacterState extends State<Character> {
       child: ListView.builder(
         itemCount: images.length,
         itemBuilder: (context, index) {
-          return ImageWidget(images: images,index:index);
+          return ImageWidget(images: images, index: index);
         },
       ),
     );
   }
-  
-  
+
+  Widget getRoss() {
+    return Expanded(
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            rotate.value = !rotate.value;
+          },
+          child: Image.asset('assets/sandwich.webp'),
+        ),
+      ),
+    );
+  }
+
+  Widget getChandler() {
+    return Expanded(
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            rotate.value = !rotate.value;
+          },
+          child: Image.asset('assets/sandwich.webp'),
+        ),
+      ),
+    );
+  }
+
+  Widget getMonica() {
+    return Expanded(
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            rotate.value = !rotate.value;
+          },
+          child: Image.asset('assets/sandwich.webp'),
+        ),
+      ),
+    );
+  }
+
+  Widget getPhoebe() {
+    return Expanded(
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            rotate.value = !rotate.value;
+          },
+          child: Image.asset('assets/sandwich.webp'),
+        ),
+      ),
+    );
+  }
+}
+
+class RotateWidget extends StatefulWidget {
+  const RotateWidget({
+    Key? key,
+    required AnimationController controller,
+    required this.happy,
+    required this.widget,
+  })  : _controller = controller,
+        super(key: key);
+
+  final AnimationController _controller;
+  final ValueNotifier happy;
+  final Character widget;
+
+  @override
+  State<RotateWidget> createState() => _RotateWidgetState();
+}
+
+class _RotateWidgetState extends State<RotateWidget> {
+  @override
+  void initState() {
+    print('RotateWidget initState');
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Transform.rotate(
+      angle: widget._controller.value * 2 * math.pi,
+      child: Image.asset(
+        widget.happy.value
+            ? 'assets/joey2.webp'
+            : 'assets/${widget.widget.imgUrl}',
+        fit: BoxFit.cover,
+      ),
+    );
+  }
 }
 
 class ImageWidget extends StatefulWidget {
@@ -124,7 +252,8 @@ class ImageWidget extends StatefulWidget {
   State<ImageWidget> createState() => _ImageWidgetState();
 }
 
-class _ImageWidgetState extends State<ImageWidget>  with AutomaticKeepAliveClientMixin{
+class _ImageWidgetState extends State<ImageWidget>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
