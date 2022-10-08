@@ -1,6 +1,8 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:poke/models/recipe.dart';
+import 'package:poke/network/api_service.dart';
 
 class Character extends StatefulWidget {
   final String imgUrl;
@@ -176,14 +178,92 @@ class _CharacterState extends State<Character>
   Widget getMonica() {
     return Expanded(
       child: Center(
-        child: GestureDetector(
-          onTap: () {
-            rotate.value = !rotate.value;
-          },
-          child: Image.asset('assets/sandwich.webp'),
-        ),
+        child: FutureBuilder(
+            future: getRecipes(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                List<RecipeData> recipes = snapshot.data as List<RecipeData>;
+                return ListView.builder(
+                  itemCount: recipes.length,
+                  itemBuilder: (context, index) {
+                    Recipe? recipe = recipes[index].recipe;
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {});
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Card(
+                          elevation: 3,
+                          child: SizedBox(
+                            height: 120,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Image.network(
+                                  recipe?.images?.lARGE?.url ?? '',
+                                  fit: BoxFit.cover,
+                                  width: 100,
+                                  height: 120,
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          recipe?.label ?? '',
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const Spacer(),
+                                        Text(
+                                          'Calories : ${recipe?.calories?.toInt().toString() ?? '0'}',
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            }),
       ),
     );
+  }
+
+  Future<List<RecipeData>> getRecipes() async {
+    List ids = [
+      '1b9794df9596fb8a060fb52029db63b0',
+      '60cdcf4d0ec60fd96bd491db8eba10bc',
+      '68794b61476d390d2e4fca5880875c7a',
+    ];
+
+    List<RecipeData> recipeData = [];
+
+    for (int i = 0; i < ids.length; i++) {
+      RecipeData recipeDa = await ApiService.fetchRecipe(id: ids[i]);
+      recipeData.add(recipeDa);
+    }
+
+    return recipeData;
   }
 
   Widget getPhoebe() {

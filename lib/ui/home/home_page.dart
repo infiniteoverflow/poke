@@ -13,7 +13,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   void initState() {
-    ApiService.fetchRecipe(id:1);
     super.initState();
   }
 
@@ -52,10 +51,9 @@ class _HomePageState extends State<HomePage> {
                   crossAxisSpacing: 20,
                   mainAxisSpacing: 20,
                 ),
-                itemCount: friends.length,
+                itemCount: friends.take(6).length,
                 itemBuilder: (context, index) {
                   int dummy = index;
-                  index %= 6;
                   if (happy) index = index + 6;
                   return GestureDetector(
                     onTap: () {

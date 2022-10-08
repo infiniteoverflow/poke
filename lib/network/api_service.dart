@@ -5,7 +5,7 @@ import 'package:poke/key.dart';
 import 'package:poke/models/recipe.dart';
 
 class ApiService {
-  static Future fetchRecipe({int id = 0}) async {
+  static Future<RecipeData> fetchRecipe({String id = ''}) async {
     final queryParams = {
       'app_id': Key.appId,
       'app_key': Key.applicationKey,
@@ -13,7 +13,7 @@ class ApiService {
     };
     var response = await http.get(
       Uri.https('api.edamam.com',
-          'api/recipes/v2/1b9794df9596fb8a060fb52029db63b0', queryParams),
+          'api/recipes/v2/$id', queryParams),
     );
 
     RecipeData recipeData = RecipeData.fromJson(
@@ -21,5 +21,7 @@ class ApiService {
     );
 
     print('Recipe fetched : ${recipeData.recipe?.uri}');
+
+    return recipeData;
   }
 }
