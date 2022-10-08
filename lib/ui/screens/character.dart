@@ -163,13 +163,19 @@ class _CharacterState extends State<Character>
   }
 
   Widget getChandler() {
+    List images = [
+      'chandler3.webp',
+      'chandler4.webp',
+      'chandler5.webp',
+      'chandler6.webp',
+    ];
     return Expanded(
       child: Center(
-        child: GestureDetector(
-          onTap: () {
-            rotate.value = !rotate.value;
+        child: ListView.builder(
+          itemCount: images.length,
+          itemBuilder: (context, index) {
+            return ImageWidget(images: images, index: index);
           },
-          child: Image.asset('assets/sandwich.webp'),
         ),
       ),
     );
@@ -269,12 +275,7 @@ class _CharacterState extends State<Character>
   Widget getPhoebe() {
     return Expanded(
       child: Center(
-        child: GestureDetector(
-          onTap: () {
-            rotate.value = !rotate.value;
-          },
-          child: Image.asset('assets/sandwich.webp'),
-        ),
+        child: Image.asset('assets/pheobe3.jpeg'),
       ),
     );
   }
@@ -332,19 +333,14 @@ class ImageWidget extends StatefulWidget {
   State<ImageWidget> createState() => _ImageWidgetState();
 }
 
-class _ImageWidgetState extends State<ImageWidget>
-    with AutomaticKeepAliveClientMixin {
+class _ImageWidgetState extends State<ImageWidget> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Image.asset(
       'assets/${widget.images[widget.index]}',
       fit: BoxFit.cover,
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void dispose() {
